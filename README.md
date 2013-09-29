@@ -12,15 +12,17 @@ See [this page](http://katebe.github.io/angular-presence/) for live exmaples.
 2. Include the dependency in your HTML.
 3. Add the `presence` module to your module dependencies.
 4. Add a factory that defines the states and initializes the service with it:
-```javascript
-angular.module('your-module').factory('states', function($presence) {
-  var states = {
-    ACTIVE : 0, // enter this state immediately after user-action
-    INACTIVE : 1000 // enter this state after 1 second of non-registered user-action
-  }
-  return $presence.init(states);
-});
-```
+
+  ```javascript
+  angular.module('your-module').factory('states', function($presence) {
+    var states = {
+      ACTIVE : 0, // enter this state immediately after user-action
+      INACTIVE : 1000 // enter this state after 1 second of non-registered user-action
+    }
+    return $presence.init(states);
+  });
+  ```
+
 5. Add the `presence` directive as an attribute to the component(s) you would like to monitor.
 6. Use your defined states in other services or controllers.
 
