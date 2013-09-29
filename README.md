@@ -9,22 +9,24 @@ See [this page](http://katebe.github.io/angular-presence/) for live exmaples.
 
 ##Usage
 1. `bower install --save angular-presence` or download the script directly.
-2. Include the dependency in your HTML.
-3. Add the `presence` module to your module dependencies.
-4. Add a factory that defines the states and initializes the service with it:
 
-  ```javascript
-  angular.module('your-module').factory('states', function($presence) {
-    var states = {
-      ACTIVE : 0, // enter this state immediately after user-action
-      INACTIVE : 1000 // enter this state after 1 second of non-registered user-action
-    }
-    return $presence.init(states);
-  });
-  ```
+2. Include the script dependency in your HTML and the module dependency for `presence` in your code.
 
-5. Add the `presence` directive as an attribute to the component(s) you would like to monitor.
-6. Use your defined states in other services or controllers.
+3. Add a factory that defines the states and initializes the service with it:
+
+    ```javascript
+    angular.module('your-module').factory('states', function($presence) {
+      var states = {
+        ACTIVE : 0, // enter this state immediately after user-action
+        INACTIVE : 1000 // enter this state after 1 second of non-registered user-action
+      }
+      return $presence.init(states);
+    });
+    ```
+
+4. Add the `presence` directive as an attribute to the component(s) you would like to monitor.
+
+5. Use your defined states in other services or controllers.
 
 ##Defining your states
 The example above shows the minimal object definition you have to pass to `$presence.init()`. It is equivalent to the following:
