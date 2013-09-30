@@ -2,11 +2,11 @@
   'use strict';
   angular.module('presence', []).directive('presence', [
     '$presence',
-    'prTypes',
-    function ($presence, prTypes) {
+    'types',
+    function ($presence, types) {
       function getTypeNames(param) {
         if (!param) {
-          return prTypes.getAllTypeNames();
+          return types.getAllTypeNames();
         } else {
           return param.split(' ');
         }
@@ -15,7 +15,7 @@
         restrict: 'A',
         link: function (scope, element, attrs) {
           angular.forEach(getTypeNames(attrs.presence), function (typeName) {
-            var type = prTypes.get(typeName);
+            var type = types.get(typeName);
             element.on(type.events, function () {
               $presence.registerAction(type.name);
             });
@@ -23,7 +23,7 @@
         }
       };
     }
-  ]).factory('prTypes', function () {
+  ]).factory('types', function () {
     return {
       MOUSE: {
         name: 'MOUSE',
@@ -56,9 +56,9 @@
     '$timeout',
     '$q',
     'orderByFilter',
-    'prTypes',
-    function ($timeout, $q, orderByFilter, prTypes) {
-      var entryState = {}, _states, initialState = 0, currentState, timer, timerCallback = [], deferred = [], stateChangedDeferred = $q.defer();
+    'types',
+    function ($timeout, $q, orderByFilter, types) {
+      var entryState = {}, states, initialStateId = 0, currentStateId, timer, callbacksStateLeave = {}, callbacksStateEnter = {}, callbacksStateChange = [];
       function init(statesInput) {
         function objectify() {
           angular.forEach(statesInput, function (state, key) {
@@ -78,110 +78,107 @@
           return orderByFilter(statesArray, 'enter');
         }
         function extendStates() {
-          angular.forEach(_states, function (state, id) {
+          angular.forEach(states, function (state, id) {
             state.id = id;
             state.onEnter = function (fn) {
-              return onStateEnter(id, fn);
+              onStateEnter(id, fn);
             };
             state.onLeave = function (fn) {
-              return onStateLeave(id, fn);
+              onStateLeave(id, fn);
             };
           });
         }
         function extendStatesInput() {
           statesInput.onChange = function (fn) {
-            return onStateChange(fn);
+            onStateChange(fn);
           };
           statesInput.getCurrent = function () {
             return getCurrentState();
           };
         }
         function initInternalStructures() {
-          function createTimerCallback(state) {
-            return function () {
-              changeState(state);
-            };
-          }
-          function setEntryState(type) {
-            if (accept.indexOf(type) === -1) {
-              entryState[type] = i + 1;
+          angular.forEach(states, function (state, id) {
+            function setEntryState(type) {
+              if (state.accept.toUpperCase().indexOf(type) === -1) {
+                entryState[type] = id + 1;
+              }
             }
-          }
-          for (var i = 0; i < _states.length; i++) {
-            var state = _states[i];
             if (state.initial === true) {
-              initialState = i;
+              initialStateId = id;
             }
             if (state.accept) {
-              var accept = state.accept.toUpperCase();
-              angular.forEach(prTypes.getAllTypeNames(), setEntryState);
+              angular.forEach(types.getAllTypeNames(), setEntryState);
             }
-            deferred[i] = $q.defer();
-            timerCallback[i] = createTimerCallback(i);
-          }
+          });
         }
         statesInput = objectify();
-        _states = sortStates();
+        states = sortStates();
         extendStates();
         extendStatesInput();
         initInternalStructures();
-        changeState(initialState);
+        changeState(initialStateId);
         return statesInput;
       }
-      function changeState(newState) {
-        var oldState = currentState;
-        if (_states[oldState]) {
-          _states[oldState].leftOn = new Date();
-          _states[oldState].active = false;
+      function changeState(newStateId) {
+        var oldStateId = currentStateId;
+        if (states[oldStateId]) {
+          states[oldStateId].leftOn = new Date();
+          states[oldStateId].active = false;
         }
-        _states[newState].active = true;
-        _states[newState].enteredOn = new Date();
-        _states[newState].enteredFrom = _states[oldState];
+        states[newStateId].active = true;
+        states[newStateId].enteredOn = new Date();
+        states[newStateId].enteredFrom = states[oldStateId] ? states[oldStateId].name : undefined;
+        currentStateId = newStateId;
         $timeout(function () {
-          deferred[newState].notify(_states[newState]);
-          stateChangedDeferred.notify(_states[newState]);
+          notify(callbacksStateLeave[oldStateId]);
+          notify(callbacksStateEnter[newStateId]);
+          notify(callbacksStateChange);
         });
-        restartTimer(newState);
-        currentState = newState;
+        restartTimer();
       }
-      function restartTimer(targetState) {
-        if (_states[targetState + 1]) {
+      function changeStateToNext() {
+        changeState(currentStateId + 1);
+      }
+      function notify(callbacks) {
+        if (callbacks) {
+          for (var i = 0; i < callbacks.length; i++) {
+            callbacks[i](states[currentStateId]);
+          }
+        }
+      }
+      function restartTimer() {
+        var nextState = currentStateId + 1;
+        if (states[nextState]) {
           $timeout.cancel(timer);
-          timer = $timeout(timerCallback[targetState + 1], _states[targetState + 1].enter - _states[targetState].enter);
+          timer = $timeout(changeStateToNext, states[nextState].enter - states[currentStateId].enter);
         }
       }
       function registerAction(type) {
-        if (!_states) {
+        if (!states) {
           return;
         }
-        var targetState = entryState[type] || 0;
-        if (targetState < currentState) {
-          changeState(targetState);
-        } else if (targetState === currentState) {
-          restartTimer(targetState);
+        var targetStateId = entryState[type] || 0;
+        if (targetStateId < currentStateId) {
+          changeState(targetStateId);
+        } else if (targetStateId === currentStateId) {
+          restartTimer();
         }
       }
       function onStateChange(fn) {
-        return stateChangedDeferred.promise.then(null, null, fn);
+        callbacksStateChange.push(fn);
       }
       function onStateEnter(state, fn) {
-        return deferred[state].promise.then(null, null, fn);
+        (callbacksStateEnter[state] || (callbacksStateEnter[state] = [])).push(fn);
       }
       function onStateLeave(state, fn) {
-        if (state < _states.length) {
-          return onStateEnter(state + 1, fn);
-        } else {
-          return onStateEnter(0, fn);
-        }
+        (callbacksStateLeave[state] || (callbacksStateLeave[state] = [])).push(fn);
       }
       function getCurrentState() {
-        return _states[currentState];
+        return states[currentStateId];
       }
       return {
         init: init,
-        registerAction: registerAction,
-        onStateChange: onStateChange,
-        getCurrentState: getCurrentState
+        registerAction: registerAction
       };
     }
   ]);
