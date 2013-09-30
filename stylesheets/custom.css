@@ -1,0 +1,29 @@
+.example {
+  border: 1px solid #000;
+  margin-bottom: 20px;
+}
+
+.example section{
+  background: #ccc;
+  padding: 10px;
+  font-size: 20pt;
+}
+
+.example input {
+  display: block;
+  width: 100%;
+  font-size: 20pt;
+}
+
+.example .debug {
+  background: #303030;
+  color: #f2f2f2;
+  text-shadow: none;
+  padding: 10px;
+  overflow: auto;
+}
+
+#view-on-github {
+  float: right;
+  margin-top: 5px;
+}
