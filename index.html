@@ -30,21 +30,21 @@
         <hr>
 
         <section id="main_content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>What is it?</h3>
+          
+<h3><a name="what-is-it" class="anchor" href="#what-is-it"><span class="octicon octicon-link"></span></a>What is it?</h3>
 
 <p>An AngularJS directive & service to detect user interactions and set them in relation to user-defined states like active, away etc.</p>
 
 <p>A usecase could be a chat system where you want to know if the user typing, idling or away.</p>
 
-<h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Example #1</h3>
+<h3><a name="example-1" class="anchor" href="#example-1"><span class="octicon octicon-link"></span></a>Example #1</h3>
 
 <p>Move your mouse over the area underneath - or touch it, if you have a touchscreen.</p>
 
 <div id="presence-example-one" ng-controller="ctrl" class="example">
 	<section presence>{{states.getCurrent().text}}</section>
-	<div class="debug" ng-click="debug = !debug">
-		<div>Click to toggle state inspector
+	<div class="debug">
+		<div ng-click="debug = !debug">Click to toggle state inspector
 		<pre ng-show="debug">{{states | json}}</pre>
 		</div>
 	</div>
@@ -70,7 +70,7 @@ angular.module('presence-example-one', ['presence'])
 &lt;div presence&gt;{{states.getCurrent().text}}&lt;/div&gt;
 </pre>
 
-<h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Example #2</h3>
+<h3><a name="example-2" class="anchor" href="#example-2"><span class="octicon octicon-link"></span></a>Example #2</h3>
 
 <p>Move your mouse over the area underneath - or touch it, if you have a touchscreen.</p>
 
@@ -80,8 +80,8 @@ angular.module('presence-example-one', ['presence'])
 		<input presence="KEYBOARD" type="text" value="Type here: "/>
 		<input type="text" value="I don't care if you type here... "/>
 	</section>
-	<div class="debug" ng-click="debug = !debug">
-		<div>Click to toggle state inspector
+	<div class="debug">
+		<div ng-click="debug = !debug">Click to toggle state inspector
 		<pre ng-show="debug">{{states | json}}</pre>
 		</div>
 	</div>
@@ -127,8 +127,10 @@ angular.module('presence-example-two', ['presence'])
   &lt;input presence="KEYBOARD" type="text" value="Type here: "/&gt;
   &lt;input type="text" value="I don't care if you type here... "/&gt; 
 &lt;/div&gt;
-
 </pre>
+
+<h3><a name="more" class="anchor" href="#more"><span class="octicon octicon-link"></span></a>More info</h3>
+<p>For more information take a look at the <a href="https://github.com/katebe/angular-presence">github repository</a>.
 
         <footer>
           angular-presence is maintained by <a href="https://github.com/katebe">katebe</a><br>
