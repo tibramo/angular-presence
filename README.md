@@ -12,13 +12,13 @@ See [this page](http://katebe.github.io/angular-presence/) for live exmaples.
 
 2. Include the script dependency in your HTML and the module dependency for `presence` in your code.
 
-3. Add a factory that defines the states and initializes the service with it:
+3. Add a factory that defines the states and initializes the `$presence` service with it. This will enhance your self-defined object with attributes and functions that you can use later.
 
     ```javascript
     angular.module('your-module').factory('states', function($presence) {
       var states = {
         ACTIVE : 0, // enter this state immediately after user-action
-        INACTIVE : 1000 // enter this state after 1 second of non-registered user-action
+        INACTIVE : 1000 // enter this state after 1 second without any registered events
       }
       return $presence.init(states);
     });
@@ -32,14 +32,14 @@ See [this page](http://katebe.github.io/angular-presence/) for live exmaples.
 The example above shows the minimal object definition you have to pass to `$presence.init()`. It is equivalent to the following:
 ```javascript
 {
-  ACTIVE : { enter: 0 }, // *enter* is optinal here, 0 is the default value if not set
+  ACTIVE : { enter: 0 }, // *enter* is optinal here, 0 is the default value if no value is given
   INACTIVE : { enter: 1000}
 }
 ```
 
 Other attributes you can set are
 * `initial: true` on the state that should be active at the start of your application
-* `accept` which takes a string containing one or more keywords from `'MOUSE KEYBOARD TOUCH'`. If, for example, `MOUSE` is not accepted on state `X` then a mouse-event can only activate the state that comes after `X`
+* `accept` which takes a string containing one or more keywords from `'MOUSE KEYBOARD TOUCH'`. If, for example, `MOUSE` is not accepted on state `X`, then a mouse-event can only activate the state that comes after `X`
 * any other that you like, but watch out for the ones added automatically.
 
 
@@ -49,17 +49,17 @@ A more complex example for a chat system could look like this:
   TYPING : {
     accept: "KEYBOARD"
   },
-  IDLE : { // initially and two seconds after the last keypress this state will be active
+  IDLE : { // initially, two seconds after the last keypress and when mouse- or touchevents occur this state will be active
     enter: 2000,
     initial: true
   },
-  AWAY : 2000 // twenty seconds after the last keypress this state will be active
+  AWAY : 20000 // this state will be active 18 seconds (20s - 2s) after the last registered event in IDLE, wich is equivalent to 20 seconds atfer entering TYPING when no event occurs
 }
 ```
 
 ##Adding the directive
 
-You can add the `presence` directive as an attribute on any component that you like. If you dont want to detect all events, you can pass it a string with one or more keywords from `'MOUSE KEYBOARD TOUCH'`.
+You can add the `presence` directive as an attribute on any components that you like. If you dont want to detect all events, you can pass it a string with one or more keywords from `'MOUSE KEYBOARD TOUCH'`.
 
 ##Using the defined states
 
@@ -73,7 +73,7 @@ The presence service enhances each state-object with some attributes:
 Additionaly, every state-object has two functions, `onEnter` and `onLeave`, which take a function as the only parameter that will be called when the state will be entered or left.
 
 The user-defined service itself is extended with two functions:
-* `onChange` which takes, just like `onEnter` and `onLeave`, a function that will be called with newly active state object whenever this changes.
+* `onChange` which takes, just like `onEnter` and `onLeave`, a function that will be called with the newly active state object whenever this changes.
 * `getCurrent` which returns the currently active state.
 
 ## Contributing
