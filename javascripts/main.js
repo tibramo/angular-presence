@@ -1,3 +1,4 @@
+// Example #1
 angular.module('presence-example-one', ['presence'])
 .factory('states', function($presence) {
   return $presence.init({
@@ -9,6 +10,7 @@ angular.module('presence-example-one', ['presence'])
   $scope.states = states;
 });
 
+// Example #2
 angular.module('presence-example-two', ['presence'])
 .factory('states', function($presence) {
   return $presence.init({
@@ -16,7 +18,7 @@ angular.module('presence-example-two', ['presence'])
       accept: "kEYBOARD", text: "Hey, you are typing!"
     },
     IDLE : {
-      enter: 2000, initial: true, text: "I know you're there, why dont you type something?",
+      enter: 2000, initial: true, text: "I know you're there, why don't you type something?",
     },
     SHORTAWAY : {
 	  enter: 5000, text: "Ok, i think you're gone."
