@@ -1,7 +1,7 @@
 #angular-presence
 An AngularJS directive & service to detect user interactions and set them in relation to user-defined states like *active*, *away* etc.
 
-A usecase could be a chat system where you want to know if the user typing, idling or away.
+Use this in an chat or messenger application where you want to display the user states. Or you want to inform the user about updates when the user returned after being away - or show specific views depending on the input method (mouse/keyboard/touch).
 
 ##Examples
 
