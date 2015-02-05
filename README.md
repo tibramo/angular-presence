@@ -5,7 +5,7 @@ Use this in an chat or messenger application where you want to display the user 
 
 ##Examples
 
-See [this page](http://katebe.github.io/angular-presence/) for live exmaples.
+See [this page](http://katebe.github.io/angular-presence/) for live examples.
 
 ##Usage
 1. `bower install --save angular-presence` or download the script directly.
@@ -23,6 +23,8 @@ See [this page](http://katebe.github.io/angular-presence/) for live exmaples.
       return $presence.init(states);
     });
     ```
+    
+    If you like, you can pass `$presence.init` the boolean value `true` as a second parameter, so the internal timer for changing states will not start immediately. Later, call `$presence.start()` to start it. Additionaly, you can check with `$presence.isActive()` whether the timer is already running or not.
 
 4. Add the `presence` directive as an attribute to the component(s) you would like to monitor.
 
