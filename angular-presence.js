@@ -54,12 +54,12 @@
     };
   }).factory('$presence', [
     '$timeout',
-    '$q',
+    '$log',
     'orderByFilter',
     'types',
-    function ($timeout, $q, orderByFilter, types) {
+    function ($timeout, $log, orderByFilter, types) {
       var entryState = {}, states, initialStateId = 0, currentStateId, timer, callbacksStateLeave = {}, callbacksStateEnter = {}, callbacksStateChange = [];
-      function init(statesInput) {
+      function init(statesInput, startDelayed) {
         function objectify() {
           angular.forEach(statesInput, function (state, key) {
             if (!angular.isObject(state)) {
@@ -116,7 +116,9 @@
         extendStates();
         extendStatesInput();
         initInternalStructures();
-        changeState(initialStateId);
+        if (!startDelayed) {
+          changeState(initialStateId);
+        }
         return statesInput;
       }
       function changeState(newStateId) {
@@ -176,9 +178,25 @@
       function getCurrentState() {
         return states[currentStateId];
       }
+      function isActive() {
+        return timer !== undefined;
+      }
+      function start(initialState) {
+        if (isActive()) {
+          $log.info('$presence timer already started');
+          return;
+        }
+        if (initialState && initialState.id) {
+          changeState(initialState.id);
+        } else {
+          changeState(initialStateId);
+        }
+      }
       return {
         init: init,
-        registerAction: registerAction
+        registerAction: registerAction,
+        isActive: isActive,
+        start: start
       };
     }
   ]);
