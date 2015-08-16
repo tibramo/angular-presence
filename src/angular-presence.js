@@ -16,7 +16,10 @@
       link: function(scope, element, attrs) {
         angular.forEach(getTypeNames(attrs.presence), function(typeName) {
           var type = types.get(typeName);
-          element.on(type.events, function() {
+          element.on(type.events, function(event) {
+            if (event.type === 'mousemove' && event.originalEvent.movementX === 0 && event.originalEvent.movementY === 0) {
+              return; // Fix for Chrome desktop notifications, triggering mousemove event.
+            }
             $presence.registerAction(type.name);
           });
         });
