@@ -3,6 +3,8 @@ An AngularJS directive & service to detect user interactions and set them in rel
 
 Use this in an chat or messenger application where you want to display the user states. Or you want to inform the user about updates when the user returned after being away - or show specific views depending on the input method (mouse/keyboard/touch).
 
+**If you miss any feature, please let me know!**
+
 ##Examples
 
 See [this page](http://katebe.github.io/angular-presence/) for live examples.
