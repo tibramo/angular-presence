@@ -17,7 +17,8 @@
         angular.forEach(getTypeNames(attrs.presence), function(typeName) {
           var type = types.get(typeName);
           element.on(type.events, function(event) {
-            if (event.type === 'mousemove' && event.originalEvent.movementX === 0 && event.originalEvent.movementY === 0) {
+            event = event.originalEvent || event; // use originalEvent if available
+            if (event.type === 'mousemove' && event.movementX === 0 && event.movementY === 0) {
               return; // Fix for Chrome desktop notifications, triggering mousemove event.
             }
             $presence.registerAction(type.name);
