@@ -67,12 +67,13 @@ You can add the `presence` directive as an attribute on any components that you 
 
 ##Using the defined states
 
-The presence service enhances each state-object with some attributes:
+The presence service enhances each state-object with some attributes / functions:
 * `name` [string] is the name of the state
 * `id` [number] is the id of the state which relates to the order of the states, beginning with 0
 * `active` [boolean] shows whether this state is currently active or not
 * `enteredOn`/`leftOn` [date] shows the date when the state was entered/left at last
 * `enteredFrom` [string] shows the name of the state that was active before this state
+* `activate` [function] to manually activate the state
 
 Additionaly, every state-object has two functions, `onEnter` and `onLeave`, which take a function as the only parameter that will be called when the state will be entered or left.
 

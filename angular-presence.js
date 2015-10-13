@@ -91,6 +91,9 @@
             state.onLeave = function (fn) {
               onStateLeave(id, fn);
             };
+            state.activate = function () {
+              changeState(id);
+            };
           });
         }
         function extendStatesInput() {
@@ -128,6 +131,9 @@
       }
       function changeState(newStateId) {
         var oldStateId = currentStateId;
+        if (!states[newStateId]) {
+          throw new Error('Unknown stateId: ' + newStateId);
+        }
         if (states[oldStateId]) {
           states[oldStateId].leftOn = new Date();
           states[oldStateId].active = false;
@@ -154,10 +160,9 @@
         }
       }
       function restartTimer() {
-        var nextState = currentStateId + 1;
-        if (states[nextState]) {
-          $timeout.cancel(timer);
-          timer = $timeout(changeStateToNext, states[nextState].enter - states[currentStateId].enter);
+        $timeout.cancel(timer);
+        if (states[currentStateId + 1]) {
+          timer = $timeout(changeStateToNext, states[currentStateId + 1].enter - states[currentStateId].enter);
         }
       }
       function registerAction(type) {
@@ -200,8 +205,9 @@
       return {
         init: init,
         registerAction: registerAction,
+        start: start,
         isActive: isActive,
-        start: start
+        changeState: changeState
       };
     }
   ]);
